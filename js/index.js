@@ -2,21 +2,21 @@ window.onload = function() {
    // fetch("https://en.wikipedia.org/w/api.php?origin=*&format=json&action=opensearch&search=dog")
     //fetch("https://en.wikipedia.org/w/api.php?origin=*&format=json&action=query&generator=search&gsrlimit=10&exsentences=1&gsrsearch=dog")
     
-    document.getElementById('search').addEventListener('click', function() {
-        const text = document.getElementById('text').value;
+    document.getElementById('search').addEventListener('click', function(event) {
+        const text = document.getElementById('text').value;       
         makeQuery(text);
     });
     document.addEventListener('keypress', function(event) {
-        const text = document.getElementById('text').value;
+        const text = document.getElementById('text').value;        
         if(event.key === 'Enter') {
             makeQuery(text);
+            event.preventDefault();
         }
     })
     function makeQuery(searchText) {
         let query = "https://en.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrlimit=10&prop=extracts&exintro&explaintext&exsentences=1&exlimit=max&origin=*&gsrsearch=" + searchText;
         fetch(query)
         .then(response => {
-            console.log(response);
             return response.json();
         })
         .then(result => {
@@ -45,12 +45,15 @@ window.onload = function() {
         });
                
         arrayOfResults.map(item => {            
-            parent.innerHTML+=`<div><h2>${item.title}</h2>
-            <p><a href="https://en.wikipedia.org/?curid=${item.pageid}" target="_blank">${item.extract}</a><p>
+            parent.innerHTML+=`<div>
+            <a href="https://en.wikipedia.org/?curid=${item.pageid}" target="_blank"><h2>${item.title}</h2>${item.extract}</a>
             </div>`;
             return
         })
         
     }
+    document.getElementById('text').addEventListener('click', () => {
+        document.getElementById('text').classList.add('open');
+    })
     
 }
